@@ -1,16 +1,14 @@
 document.addEventListener("alpine:init", () => {
     Alpine.store("userOptions", {
         printer: null,
-        linear_rail: null,
-        x_endstop: null,
         extruder: null,
         hotend: null,
         probe: null,
         display: null,
-        requirement: {
-            x_carriage: null,
-            uhf: null,
-        },
+        linear_rail: null,
+        x_endstop: null,
+        x_carriage: null,
+        uhf: null,
 
         setOrReset(key, value) {
             // TODO: CHECK FOR REQUIREMENTS OF INTERFACE
@@ -18,6 +16,7 @@ document.addEventListener("alpine:init", () => {
                 this[key] = null;
                 if (key === "printer") {
                     this.linear_rail = null;
+                    this.x_endstop = null;
                 }
             } else {
                 this[key] = value;
@@ -32,10 +31,38 @@ document.addEventListener("alpine:init", () => {
                 requirement: {
                     x_carriage: "voron",
                 },
-                variants: {
-                    linear_rails: ["MGN7", "MGN9"],
-                    x_endstop: ["YES", "NO"],
-                },
+                variants: [
+                    {
+                        key: "linear_rail",
+                        title: "Linear Rails",
+                        description: "What size linear rails does your printer use?",
+                        options: [
+                            {
+                                name: "MGN7",
+                                value: "MGN7",
+                            },
+                            {
+                                name: "MGN9",
+                                value: "MGN9",
+                            },
+                        ],
+                    },
+                    {
+                        key: "x_endstop",
+                        title: "X Axis Endstop",
+                        description: "Does your printer have an X axis endstop?",
+                        options: [
+                            {
+                                name: "Yes",
+                                value: "true",
+                            },
+                            {
+                                name: "No",
+                                value: "false",
+                            },
+                        ],
+                    }
+                ],
                 supported: {
                     extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
                     probes: [],
@@ -47,10 +74,38 @@ document.addEventListener("alpine:init", () => {
                 requirement: {
                     x_carriage: "voron",
                 },
-                variants: {
-                    linear_rails: ["MGN7", "MGN9"],
-                    x_endstop: ["YES", "NO"],
-                },
+                variants: [
+                    {
+                        key: "linear_rails",
+                        title: "Linear Rails",
+                        description: "What size linear rails does your printer use?",
+                        options: [
+                            {
+                                name: "MGN7",
+                                value: "MGN7",
+                            },
+                            {
+                                name: "MGN9",
+                                value: "MGN9",
+                            },
+                        ],
+                    },
+                    {
+                        key: "x_endstop",
+                        title: "X Axis Endstop",
+                        description: "Does your printer have an X axis endstop?",
+                        options: [
+                            {
+                                name: "Yes",
+                                value: true,
+                            },
+                            {
+                                name: "No",
+                                value: false,
+                            },
+                        ],
+                    }
+                ],
                 supported: {
                     extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
                     probes: [],
@@ -84,9 +139,23 @@ document.addEventListener("alpine:init", () => {
                 requirement: {
                     x_carriage: "x_carriage",
                 },
-                variants: {
-                    linear_rails: ["MGN9", "MGN12"],
-                },
+                variants: [
+                    {
+                        key: "linear_rails",
+                        title: "Linear Rails",
+                        description: "What size linear rails does your printer use?",
+                        options: [
+                            {
+                                name: "MGN9",
+                                value: "MGN9",
+                            },
+                            {
+                                name: "MGN12",
+                                value: "MGN12",
+                            },
+                        ],
+                    }
+                ],
                 supported: {
                     extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
                     probes: [],
@@ -292,7 +361,7 @@ document.addEventListener("alpine:init", () => {
 
     Alpine.data("stls", () => [
         {
-            dependencies: ["x_carriage, MGN7"],
+            dependencies: ["x_carriage", "MGN7"],
             category: "carriage",
             stl: "x_carriage_Mini_Stealth_MGN7.stl",
         },

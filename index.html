@@ -25,9 +25,6 @@
   <body>
     <div class="container flex justify-between px-4 mx-auto">
       <div x-data="interface">
-        <!-- <template x-for="test in testies">
-        <li x-text="test"></li>
-      </template> -->
         <ul class="steps">
           <li
             class="step"
@@ -65,22 +62,31 @@
               x-text="details.name"
             ></button>
           </template>
-          <!-- TODO: CHECK FOR VARIANTS -->
-          <div
-            x-if="$store.userOptions.printer && printers[$store.userOptions.printer].linear_rails"
+          <template
+            x-if="$store.userOptions.printer && printers[$store.userOptions.printer]?.variants"
           >
-            <h3>Linear Rails</h3>
-            <template
-              x-for="[key, details] in Object.entries(printers[$store.userOptions.printer].linear_rails)"
+            <div
+              x-data="{variants: printers[$store.userOptions.printer]?.variants}"
+              class="flex flex-col w-full border-opacity-50"
             >
-              <button
-                class="btn btn-secondary m-2 shadow-md shadow-slate-600"
-                :class="$store.userOptions.linear_rail && $store.userOptions.linear_rail !== key ? 'btn-disabled' : ''"
-                @click="$store.userOptions.setOrReset('linear_rail', key)"
-                x-text="details.name"
-              ></button>
-            </template>
-          </div>
+              <template x-for="variant in variants">
+                <!-- <h2 x-text="JSON.stringify(variant)"></h2> -->
+                <div class="flex flex-row p-4 card bg-base-300 rounded-box">
+                  <h3 x-text="variant.title"></h3>
+                  <p x-text="variant.description"></p>
+
+                  <template x-for="option in variant.options">
+                    <button
+                      class="btn btn-secondary m-2 shadow-md shadow-slate-600"
+                      :class="$store.userOptions[variant.key] && $store.userOptions[variant.key] !== option.value ? 'btn-disabled' : ''"
+                      @click="$store.userOptions.setOrReset(variant.key, option.value)"
+                      x-text="option.name"
+                    ></button>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </template>
         </div>
         <div id="extruder-selection">
           <h2>Extruder Selection</h2>
