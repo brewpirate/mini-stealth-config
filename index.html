@@ -1,4 +1,4 @@
-<html data-theme="nord">
+<html data-theme="winter">
   <head>
     <script src="//unpkg.com/alpinejs" defer></script>
     <script src="./mini-stealth.js"></script>
@@ -10,7 +10,7 @@
       type="text/css"
     />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <!-- <script>
       tailwind.config = {
         theme: {
           extend: {
@@ -20,39 +20,104 @@
           },
         },
       };
-    </script>
+    </script> -->
   </head>
   <body>
-    <div x-data="ministealth">
-      <!-- <template x-for="test in testies">
+    <div class="container flex justify-between px-4 mx-auto">
+      <div x-data="parts_matrix">
+        <!-- <template x-for="test in testies">
         <li x-text="test"></li>
       </template> -->
-      <div>
-        <template x-for="[key, details] in Object.entries(extruders)">
-          <button
-            class="btn btn-primary m-2 shadow-md shadow-black"
-            x-text="details.name"
-          ></button>
-        </template>
-      </div>
-      <div>
-        <template x-for="[key, details] in Object.entries(hotends)">
-          <button
-            class="btn btn-primary m-2 shadow-md shadow-black"
-            x-text="details.name"
-          ></button>
-        </template>
-      </div>
-      <div>
-        <template x-for="[key, details] in Object.entries(probes)">
-          <button
-            class="btn btn-primary m-2 shadow-md shadow-black"
-            x-text="details.name"
-          ></button>
-        </template>
+        <ul class="steps">
+          <li
+            class="step"
+            :class="$store.userOptions.printer ? 'step-primary' : ''"
+          >
+            Printer
+          </li>
+          <li
+            class="step"
+            :class="$store.userOptions.extruder ? 'step-primary' : ''"
+          >
+            Extruder
+          </li>
+          <li
+            class="step"
+            :class="$store.userOptions.hotend ? 'step-primary' : ''"
+          >
+            Hotend
+          </li>
+          <li
+            class="step"
+            :class="$store.userOptions.probe ? 'step-primary' : ''"
+          >
+            Probe
+          </li>
+          <li class="step">Optional</li>
+        </ul>
+        <div id="printer-selection">
+          <h2>Printer Selection</h2>
+          <template x-for="[key, details] in Object.entries(printers)">
+            <button
+              class="btn btn-primary m-2 shadow-md shadow-slate-600"
+              :class="$store.userOptions.printer && $store.userOptions.printer !== key ? 'btn-disabled' : ''"
+              @click="$store.userOptions.setOrReset('printer', key)"
+              x-text="details.name"
+            ></button>
+          </template>
+
+          <div
+            x-if="$store.userOptions.printer && printers[$store.userOptions.printer].linear_rails"
+          >
+            <h3>Linear Rails</h3>
+            <template
+              x-for="[key, details] in Object.entries(printers[$store.userOptions.printer].linear_rails)"
+            >
+              <button
+                class="btn btn-secondary m-2 shadow-md shadow-slate-600"
+                :class="$store.userOptions.linear_rail && $store.userOptions.linear_rail !== key ? 'btn-disabled' : ''"
+                @click="$store.userOptions.setOrReset('linear_rail', key)"
+                x-text="details.name"
+              ></button>
+            </template>
+          </div>
+        </div>
+        <div id="extruder-selection">
+          <h2>Extruder Selection</h2>
+          <template x-for="[key, details] in Object.entries(extruders)">
+            <button
+              class="btn btn-primary m-2 shadow-md shadow-slate-600"
+              :class="$store.userOptions.extruder && $store.userOptions.extruder !== key ? 'btn-disabled' : ''"
+              @click="$store.userOptions.setOrReset('extruder', key)"
+              x-text="details.name"
+            ></button>
+          </template>
+        </div>
+        <div>
+          <h2>Hotend Selection</h2>
+          <template x-for="[key, details] in Object.entries(hotends)">
+            <button
+              class="btn btn-primary m-2 shadow-md shadow-slate-600"
+              :class="$store.userOptions.hotend && $store.userOptions.hotend !== key ? 'btn-disabled' : ''"
+              @click="$store.userOptions.setOrReset('hotend', key)"
+              x-text="details.name"
+            ></button>
+          </template>
+        </div>
+        <div id="probe-selection">
+          <h2>Probe Selection</h2>
+          <template x-for="[key, details] in Object.entries(probes)">
+            <button
+              class="btn btn-primary m-2 shadow-md shadow-slate-600"
+              :class="$store.userOptions.probe && $store.userOptions.probe !== key ? 'btn-disabled' : ''"
+              @click="$store.userOptions.setOrReset('probe', key)"
+              x-text="details.name"
+            ></button>
+          </template>
+        </div>
+        <h1>User Selection:</h1>
+        <div x-data x-text="JSON.stringify($store.userOptions)"></div>
       </div>
     </div>
-    <!-- <button class="btn btn-secondary">Two</button> -->
-    <!-- <button class="btn btn-accent btn-outline">Three</button> -->
   </body>
 </html>
