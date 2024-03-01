@@ -1,0 +1,58 @@
+<html data-theme="nord">
+  <head>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="./mini-stealth.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              clifford: "#da373d",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <div x-data="ministealth">
+      <!-- <template x-for="test in testies">
+        <li x-text="test"></li>
+      </template> -->
+      <div>
+        <template x-for="[key, details] in Object.entries(extruders)">
+          <button
+            class="btn btn-primary m-2 shadow-md shadow-black"
+            x-text="details.name"
+          ></button>
+        </template>
+      </div>
+      <div>
+        <template x-for="[key, details] in Object.entries(hotends)">
+          <button
+            class="btn btn-primary m-2 shadow-md shadow-black"
+            x-text="details.name"
+          ></button>
+        </template>
+      </div>
+      <div>
+        <template x-for="[key, details] in Object.entries(probes)">
+          <button
+            class="btn btn-primary m-2 shadow-md shadow-black"
+            x-text="details.name"
+          ></button>
+        </template>
+      </div>
+    </div>
+    <!-- <button class="btn btn-secondary">Two</button> -->
+    <!-- <button class="btn btn-accent btn-outline">Three</button> -->
+  </body>
+</html>
