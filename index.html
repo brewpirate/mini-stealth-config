@@ -24,7 +24,7 @@
   </head>
   <body>
     <div class="container flex justify-between px-4 mx-auto">
-      <div x-data="parts_matrix">
+      <div x-data="interface">
         <!-- <template x-for="test in testies">
         <li x-text="test"></li>
       </template> -->
@@ -65,7 +65,7 @@
               x-text="details.name"
             ></button>
           </template>
-
+          <!-- TODO: CHECK FOR VARIANTS -->
           <div
             x-if="$store.userOptions.printer && printers[$store.userOptions.printer].linear_rails"
           >

@@ -1,248 +1,408 @@
-document.addEventListener('alpine:init', () => {
-    Alpine.store('userOptions', {
+document.addEventListener("alpine:init", () => {
+    Alpine.store("userOptions", {
         printer: null,
         linear_rail: null,
+        x_endstop: null,
         extruder: null,
         hotend: null,
         probe: null,
         display: null,
+        requirement: {
+            x_carriage: null,
+            uhf: null,
+        },
 
         setOrReset(key, value) {
+            // TODO: CHECK FOR REQUIREMENTS OF INTERFACE
             if (this[key] === value) {
-                this[key] = null
+                this[key] = null;
+                if (key === "printer") {
+                    this.linear_rail = null;
+                }
             } else {
-                this[key] = value
+                this[key] = value;
             }
-        }
-
-    })
-
-    Alpine.data('parts_matrix', () => ({
-        testies: [
-            "test1", "test2", "test3", "test4"
-        ],
-        printers: {
-            'voron_v01': {
-                'name': "Voron V0.1",
-                "linear_rails": {
-                    'MGN7': {
-                        "name": "MGN7",
-                        "stl": "x_carriage_Mini_Stealth_MGN7.stl",
-                        "notes:": null,
-                        "materials": [
-                            {
-                                "name": "M3 6mm BHCS",
-                                "qty": "4",
-                            },
-                            {
-                                "name": "M3 Brass Insert",
-                                "qty": "4",
-                            }
-                        ],
-                        "variations": [
-                            {
-                                "name": "no_x_endstop",
-                                "stl": "x_carriage_Mini_Stealth_MGN7_no_X-endstop.stl",
-                                "notes:": null,
-                                "materials": [
-                                    {
-                                        "name": "M3 6mm BHCS",
-                                        "qty": "4",
-                                    },
-                                    {
-                                        "name": "M3 Brass Insert",
-                                        "qty": "4",
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    'MGN9': {
-                        "name": "MGN9",
-                        "stl": "x_carriage_Mini_Stealth_MGN9.stl",
-                        "variations": [
-                            {
-                                "name": "no_x_endstop",
-                                "stl": "x_carriage_Mini_Stealth_MGN9_no_X-endstop.stl",
-                                "notes:": null,
-                                "materials": [
-                                    {
-                                        "name": "M3 6mm BHCS",
-                                        "qty": "4",
-                                    },
-                                    {
-                                        "name": "M3 Brass Insert",
-                                        "qty": "4",
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                },
-                'stls': []
-            },
-            'voron_v02': {
-                'name': "Voron V0.2",
-                'stls': []
-            },
-            'trident_v24': {
-                'name': "Voron Trident / V2.4",
-                'stls': []
-            },
-            'switchwire': {
-                'name': "Voron Switchwire",
-                'stls': []
-            },
-            'vorpal_180': {
-                'name': "Vorpal 180",
-                'stls': []
-            },
-            'micron': {
-                'name': "Micron",
-                'link': "",
-                'stls': []
-            },
         },
-        linear_rails: {
+    });
 
+    Alpine.data("interface", () => ({
+        printers: {
+            voron_v01: {
+                name: "Voron V0.1",
+                requirement: {
+                    x_carriage: "voron",
+                },
+                variants: {
+                    linear_rails: ["MGN7", "MGN9"],
+                    x_endstop: ["YES", "NO"],
+                },
+                supported: {
+                    extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
+                    probes: [],
+                },
+                stls: [],
+            },
+            voron_v02: {
+                name: "Voron V0.2",
+                requirement: {
+                    x_carriage: "voron",
+                },
+                variants: {
+                    linear_rails: ["MGN7", "MGN9"],
+                    x_endstop: ["YES", "NO"],
+                },
+                supported: {
+                    extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
+                    probes: [],
+                },
+                stls: [],
+            },
+            trident_v24: {
+                name: "Voron Trident / V2.4",
+                requirement: {
+                    x_carriage: "x_carriage",
+                },
+                supported: {
+                    extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
+                    probes: [],
+                },
+                stls: [],
+            },
+            switchwire: {
+                name: "Voron Switchwire",
+                requirement: {
+                    x_carriage: "switchwire_x_carriage",
+                },
+                supported: {
+                    extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
+                    probes: [],
+                },
+                stls: [],
+            },
+            vorpal_180: {
+                name: "Vorpal 180",
+                requirement: {
+                    x_carriage: "x_carriage",
+                },
+                variants: {
+                    linear_rails: ["MGN9", "MGN12"],
+                },
+                supported: {
+                    extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
+                    probes: [],
+                },
+                stls: [],
+            },
+            micron: {
+                name: "Micron",
+                requirement: {
+                    x_carriage: "micron",
+                },
+                supported: {
+                    extruders: ["lgx_lite", "vz_hex_cnc", "hummingbird"],
+                    probes: [],
+                },
+                stls: [],
+            },
         },
         extruders: {
-            "orbiter_15": {
-                "name": "Orbiter 1.5",
+            orbiter_15: {
+                name: "Orbiter 1.5",
             },
-            "orbiter_20": {
-                "name": "Orbiter 2.0",
+            orbiter_20: {
+                name: "Orbiter 2.0",
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
             },
-            "galileo_sa": {
-                "name": "Galileo SA",
+            galileo_sa: {
+                name: "Galileo SA",
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
             },
-            "lgx_lite": {
-                "name": "LGX Lite",
+            lgx_lite: {
+                name: "LGX Lite",
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
             },
-            "hummingbird": {
-                "name": "Hummingbird",
+            hummingbird: {
+                name: "Hummingbird",
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
             },
-            "vz_hex_cnc": {
-                "name": "Voron V0 Hex CNC",
+            vz_hex_cnc: {
+                name: "Voron V0 Hex CNC",
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
             },
-            "mini_s": {
-                "name": "Mini S",
+            mini_s: {
+                name: "Mini S",
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
             },
-            "proto_x": {
+            proto_x: {
                 name: "Proto X",
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
             },
-            "sherpa_micro": {
+            sherpa_micro: {
                 name: "Sherpa Micro",
-            }
+                supported: {
+                    hotends: [],
+                },
+                stls: [],
+            },
         },
         hotends: {
-            "dropeffect_xg": {
+            dropeffect_xg: {
                 name: "DropEffect XG",
             },
-            "spider_pro": {
+            spider_pro: {
                 name: "Spider Pro",
             },
-            "bambu_x1": {
+            bambu_x1: {
                 name: "Bambu X1",
             },
-            "mosquito": {
+            mosquito: {
                 name: "Mosquito",
             },
-            "volcomosq": {
+            volcomosq: {
                 name: "Volcomosq",
+                manufacturer: "Nitram",
+                requirement: {
+                    uhf: true,
+                },
             },
-            "revo_voron": {
+            revo_voron: {
                 name: "Revo Voron",
             },
-            "rapido": {
-                name: "Rapido",
+            rapido: {
+                name: "Phaetus Rapido",
+                manufacturer: "Phaetus",
             },
-            "rapido_uhf": {
-                name: "Rapido UHF",
+            rapido_uhf: {
+                name: "Phaetus Rapido UHF",
+                manufacturer: "Phaetus",
+                requirement: {
+                    uhf: true,
+                },
             },
-            "dragon": {
-                name: "Dragon",
+            dragon_st_hf: {
+                name: "Phaetus Dragon ST/HF",
+                manufacturer: "Phaetus",
             },
-            "dragon_uhf": {
-                name: "Dragon UHF",
+            dragon_uhf: {
+                name: "Phaetus Dragon UHF",
+                manufacturer: "Phaetus",
+                requirement: {
+                    uhf: true,
+                },
             },
-            "dragonfly_bmo": {
-                name: "Dragonfly BMO",
+            dragonfly_bmo: {
+                name: "Phaetus Dragonfly BMO",
+                manufacturer: "Phaetus",
             },
-            "dragonfly_bms_6": {
-                name: "Dragonfly BMS 6",
+            dragonfly_bms_6: {
+                name: "Phaetus Dragonfly BMS6",
+                manufacturer: "Phaetus",
             },
-            "dragonfly_bms_7": {
-                name: "Dragonfly BMS 7",
+            dragonfly_bms_7: {
+                name: "Phaetus Dragonfly BMS7",
+                manufacturer: "Phaetus",
             },
-            "t_volcano_dragon": {
+            t_volcano_dragon: {
                 name: "T Volcano Dragon",
+                manufacturer: "Triangle Labs",
             },
-            "dragon_ace": {
-                name: "Dragon Ace",
+            dragon_ace: {
+                name: "Triangle Labs Dragon ACE",
+                manufacturer: "Triangle Labs",
             },
-            "chcb_v6dm": {
-                name: "CHCB V6DM",
+            chcb_v6dm: {
+                name: "Triangle Labs CHCB-V V6DM",
+                manufacturer: "Triangle Labs",
             },
-            "tchc_td6s": {
-                name: "TCHC TD6S",
-            }
-
+            tchc_td6s: {
+                name: "Triangle Labs TCHC TD6S",
+                manufacturer: "Triangle Labs",
+            },
         },
         probes: {
-            "zeroclick": {
+            zeroclick: {
                 name: "ZeroClick",
             },
-            "differential_ir": {
+            differential_ir: {
                 name: "Differential IR",
             },
-            "omron": {
+            omron: {
                 name: "Omron",
             },
-            "klicky": {
+            klicky: {
                 name: "Klicky",
             },
-            "bl_touch": {
+            bl_touch: {
                 name: "BL Touch",
             },
-            "microprobe": {
+            microprobe: {
                 name: "MicroProbe",
             },
-            "euclid": {
+            euclid: {
                 name: "Euclid",
             },
-            "beacon3d": {
+            beacon3d: {
                 name: "Beacon3D",
             },
-            "pinda": {
+            pinda: {
                 name: "Pinda",
             },
-            "mini_stealth_dab": {
+            mini_stealth_dab: {
                 name: "Mini Stealth DAB",
             },
-            "micron_compatible": {
+            micron_compatible: {
                 name: "Micron Compatible",
             },
-            "boop_beta4_wired": {
+            boop_beta4_wired: {
                 name: "Boop Beta4 Wired",
             },
-            "boop_beta4_pcb": {
+            boop_beta4_pcb: {
                 name: "Boop Beta4 PCB",
             },
-
         },
         displays: {
-            "knomi_1": {},
+            knomi_1: {},
             "knomi 2": {},
-            "mellow_fly_halo": {}
+            mellow_fly_halo: {},
         },
-        universal: {
+        universal: {},
+        optional: {},
+    }));
 
+    Alpine.data("stls", () => [
+        {
+            dependencies: ["x_carriage, MGN7"],
+            category: "carriage",
+            stl: "x_carriage_Mini_Stealth_MGN7.stl",
         },
-        optional: {
-
-        }
-    }))
-})
-
-
+        {
+            dependencies: ["sherpa_micro", "differential_ir", "knomi_1", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Diff_IR_Knomi1_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "differential_ir", "knomi_1"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Diff_IR_Knomi1.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "differential_ir", "knomi_2", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Diff_IR_Knomi2_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "differential_ir", "knomi_2"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Diff_IR_Knomi2.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "differential_ir", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Diff_IR_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "differential_ir"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Diff_IR.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "knomi_1", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Knomi1_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "knomi_1"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Knomi1.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "knomi_2", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Knomi2_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "knomi_2"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_Knomi2.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "differential_ir", "knomi_1"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "zeroclick", "knomi_1", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_ZeroClick_Knomi1_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "zeroclick", "knomi_1"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_ZeroClick_Knomi1.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "zeroclick", "knomi_2", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_ZeroClick_Knomi2_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "zeroclick", "knomi_2"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_ZeroClick_Knomi2.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "zeroclick", "uhf"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_ZeroClick_UHF.stl",
+        },
+        {
+            dependencies: ["sherpa_micro", "zeroclick"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro_ZeroClick.stl",
+        },
+        {
+            dependencies: ["sherpa_micro"],
+            accent: true,
+            category: "shroud",
+            stl: "[a]_MiniStealth_Shroud_Sherpa_Micro.stl",
+        },
+    ]);
+});
